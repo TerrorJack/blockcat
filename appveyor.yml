@@ -11,7 +11,7 @@ install:
       Invoke-WebRequest https://www.stackage.org/stack/windows-x86_64 -OutFile $env:TMP\\stack.zip
       Expand-Archive $env:TMP\\stack.zip $env:APPDATA\\local\\bin
       function stack { stack.exe --no-terminal $args }
-      stack setup > NUL
+      stack setup | Out-Null
       stack exec pacman -- -Syu --noconfirm
       stack exec pacman -- -Su --noconfirm
       stack exec pacman -- -Su --noconfirm
