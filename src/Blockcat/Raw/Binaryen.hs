@@ -13,6 +13,9 @@ newtype BinaryenType = BinaryenType
     { getBinaryenType :: CUInt
     }
 
+foreign import ccall interruptible "binaryen-c.h BinaryenNone"
+               c_BinaryenNone :: BinaryenType
+
 foreign import ccall interruptible "binaryen-c.h BinaryenInt32"
                c_BinaryenInt32 :: BinaryenType
 
