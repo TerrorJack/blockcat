@@ -7,6 +7,7 @@ cache:
   directories:
     - $HOME/.stack/
     - $TRAVIS_BUILD_DIR/.stack-work/
+    - $TRAVIS_BUILD_DIR/binaryen/
 
 matrix:
   include:
@@ -17,14 +18,23 @@ matrix:
         apt:
           sources:
             - hvr-ghc
+            - llvm-toolchain-trusty
             - ubuntu-toolchain-r-test
           packages:
+            - clang-5.0
             - ghc-8.0.2
 
     - os: osx
       osx_image: xcode8.2
 
 before_install:
+  - cd $TRAVIS_BUILD_DIR/binaryen
+  - git pull || (cd .. && rm -rf binaryen && git clone --depth 1 https://github.com/WebAssembly/binaryen.git && cd binaryen)
+  - cmake -DCMAKE_C_COMPILER=`which clang-5.0` -DCMAKE_CXX_COMPILER=`which clang++-5.0` -DCMAKE_INSTALL_PREFIX=~/.local -G Ninja .
+  - ninja
+  - ninja install
+
+  - cd $TRAVIS_BUILD_DIR
   - mkdir -p ~/.local/bin
   - export PATH=~/.local/bin:/opt/ghc/8.0.2/bin:$PATH
   - |
@@ -41,4 +51,5 @@ before_install:
 install: true
 
 script:
+  - cd $TRAVIS_BUILD_DIR
   - stack --no-terminal build --haddock --no-haddock-deps --test --bench --no-run-benchmarks
