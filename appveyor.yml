@@ -10,19 +10,18 @@ install:
       $env:PATH="$env:APPDATA\\local\\bin;$env:PATH"
       Invoke-WebRequest https://www.stackage.org/stack/windows-x86_64 -OutFile $env:TMP\\stack.zip
       Expand-Archive $env:TMP\\stack.zip $env:APPDATA\\local\\bin
-      function stack { stack.exe --no-terminal $args }
-      stack setup | Out-Null
-      stack exec pacman -- -Syu --noconfirm
-      stack exec pacman -- -Su --noconfirm
-      stack exec pacman -- -Su --noconfirm
-      While ($true) { stack build --test --bench --only-dependencies; If ($?) { Break } }
+      stack --no-terminal setup | Out-Null
+      stack --no-terminal exec pacman -- -Syu --noconfirm
+      stack --no-terminal exec pacman -- -Su --noconfirm
+      stack --no-terminal exec pacman -- -Su --noconfirm
+      While ($true) { stack --no-terminal build --test --bench --only-dependencies; If ($?) { Break } }
 
 build: off
 
 build_script:
-  - ps: stack build --haddock --no-haddock-deps --test --no-run-tests --bench --no-run-benchmarks
+  - ps: stack --no-terminal build --haddock --no-haddock-deps --test --no-run-tests --bench --no-run-benchmarks
 
 test: off
 
 test_script:
-  - ps: stack test
+  - ps: stack --no-terminal test
