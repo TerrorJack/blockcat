@@ -1,5 +1,6 @@
 name: blockcat
 version: 0.0.1
+category: Language
 stability: alpha
 maintainer: Shao Cheng <astrohavoc@gmail.com>
 copyright: (c) 2017 Shao Cheng
