@@ -23,9 +23,9 @@ when:
         - C:\\msys64\\usr\\local\\lib
     else:
       include-dirs:
-        - ~/.local/include
+        - $HOME/.local/include
       extra-lib-dirs:
-        - ~/.local/lib
+        - $HOME/.local/lib
 
 ghc-options: -Wall
 
