@@ -7,7 +7,7 @@ if [ ! -d "binaryen/.git" ]; then
 fi
 cd binaryen
 git pull
-cmake -DCMAKE_C_COMPILER=`which clang-5.0` -DCMAKE_CXX_COMPILER=`which clang++-5.0` -DCMAKE_INSTALL_PREFIX=/opt/binaryen -G Ninja .
+cmake -DCMAKE_C_COMPILER=`which clang-5.0` -DCMAKE_CXX_COMPILER=`which clang++-5.0` -DCMAKE_INSTALL_PREFIX=~/.local -G Ninja .
 ninja install
 
 cd $TRAVIS_BUILD_DIR

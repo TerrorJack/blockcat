@@ -6,17 +6,17 @@
 
 ### Building `binaryen`
 
-`blockcat` assumes the development version of [`binaryen`](https://github.com/WebAssembly/binaryen) is installed to `/opt/binaryen`:
+`blockcat` assumes the development version of [`binaryen`](https://github.com/WebAssembly/binaryen) is installed in `~/.local`:
 
 ```sh
 # Dependencies: git, cmake, ninja and a C++11-compliant compiler
 git clone --depth 1 https://github.com/WebAssembly/binaryen.git
 cd binaryen
-cmake -DCMAKE_INSTALL_PREFIX=/opt/binaryen -G Ninja .
+cmake -DCMAKE_INSTALL_PREFIX=~/.local -G Ninja .
 ninja install
 ```
 
-Windows users are assumed to have [MSYS2](http://www.msys2.org/) installed at `C:\msys64`, so `/opt/binaryen` translates to `C:\msys64\opt\binaryen`. The above shell script works under the `MINGW64` shell (the dependencies can be installed with `pacman --needed -S git mingw-w64-x86_64-{cmake,ninja,gcc}`).
+Windows users are assumed to have [MSYS2](http://www.msys2.org/) installed at `C:\msys64`, and the default installation path of `binaryen` changes to `C:\msys64\usr\local`. The above shell script works under the `MINGW64` shell (just change the prefix path to `C:\\msys64\\usr\\local`; the dependencies can be installed with `pacman --needed -S git mingw-w64-x86_64-{cmake,ninja,gcc}`).
 
 The default path of `binaryen` is hard-wired in [`package.yaml`](package.yaml).
 

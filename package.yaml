@@ -18,14 +18,14 @@ when:
   - condition: os(windows)
     then:
       include-dirs:
-        - C:\msys64\opt\binaryen\include
+        - C:\\msys64\\usr\\local\\include
       extra-lib-dirs:
-        - C:\msys64\opt\binaryen\lib
+        - C:\\msys64\\usr\\local\\lib
     else:
       include-dirs:
-        - /opt/binaryen/include
+        - ~/.local/include
       extra-lib-dirs:
-        - /opt/binaryen/lib
+        - ~/.local/lib
 
 ghc-options: -Wall
 
