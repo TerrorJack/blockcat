@@ -7,6 +7,7 @@ cache:
   directories:
     - $HOME/.stack/
     - $TRAVIS_BUILD_DIR/.stack-work/
+    - $TRAVIS_BUILD_DIR/binaryen/
 
 matrix:
   include:
@@ -28,6 +29,7 @@ matrix:
       osx_image: xcode8.2
 
 before_install:
+  - export PATH=~/.local/bin:/opt/ghc/head/bin:$PATH
   - travis/before_install-`uname`.sh
 
 install: true
