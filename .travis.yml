@@ -7,7 +7,6 @@ cache:
   directories:
     - $HOME/.stack/
     - $TRAVIS_BUILD_DIR/.stack-work/
-    - $TRAVIS_BUILD_DIR/binaryen/
 
 matrix:
   include:
@@ -23,19 +22,26 @@ matrix:
           packages:
             - clang-5.0
             - ghc-8.0.2
+      env:
+        - CC=clang-5.0
+        - CXX=clang++-5.0
 
     - os: osx
       osx_image: xcode8.2
+      env:
+        - CC=clang
+        - CXX=clang++
 
 before_install:
-  - cd $TRAVIS_BUILD_DIR/binaryen
-  - git pull || (cd .. && rm -rf binaryen && git clone --depth 1 https://github.com/WebAssembly/binaryen.git && cd binaryen)
-  - cmake -DCMAKE_C_COMPILER=`which clang-5.0` -DCMAKE_CXX_COMPILER=`which clang++-5.0` -DCMAKE_INSTALL_PREFIX=~/.local -G Ninja .
+  - cd $TRAVIS_BUILD_DIR
+  - travis_retry curl -L https://github.com/WebAssembly/binaryen/archive/master.zip -o binaryen-master.zip
+  - unzip -q binaryen-master.zip
+  - cd binaryen-master
+  - cmake -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_INSTALL_PREFIX=~/.local -G Ninja .
   - ninja
   - ninja install
 
   - cd $TRAVIS_BUILD_DIR
-  - mkdir -p ~/.local/bin
   - export PATH=~/.local/bin:/opt/ghc/8.0.2/bin:$PATH
   - |
     if [ `uname` = "Darwin" ]
