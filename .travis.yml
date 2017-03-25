@@ -29,7 +29,7 @@ matrix:
       osx_image: xcode8.2
 
 before_install:
-  - export PATH=~/.local/bin:/opt/ghc/head/bin:$PATH
+  - export PATH=~/.local/bin:/opt/ghc/8.0.2/bin:$PATH
   - travis/before_install-`uname`.sh
 
 install: true
