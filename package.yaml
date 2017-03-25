@@ -10,6 +10,22 @@ extra-source-files:
   - README.md
   - CHANGELOG.md
 
+extra-libraries:
+  - binaryen
+
+when:
+  - condition: os(windows)
+    then:
+      include-dirs:
+        - C:\msys64\opt\binaryen\include
+      extra-lib-dirs:
+        - C:\msys64\opt\binaryen\lib
+    else:
+      include-dirs:
+        - /opt/binaryen/include
+      extra-lib-dirs:
+        - /opt/binaryen/lib
+
 ghc-options: -Wall
 
 dependencies:
