@@ -2,7 +2,12 @@
 
 module Blockcat.Raw.Binaryen where
 
+import Foreign
 import Foreign.C
+
+newtype BinaryenIndex = BinaryenIndex
+    { getBinaryenIndex :: CUInt
+    }
 
 newtype BinaryenType = BinaryenType
     { getBinaryenType :: CUInt
@@ -19,6 +24,28 @@ foreign import ccall interruptible "binaryen-c.h BinaryenFloat32"
 
 foreign import ccall interruptible "binaryen-c.h BinaryenFloat64"
                c_BinaryenFloat64 :: BinaryenType
+
+newtype BinaryenModuleRef = BinaryenModuleRef
+    { getBinaryenModuleRef :: Ptr ()
+    }
+
+foreign import ccall interruptible
+               "binaryen-c.h BinaryenModuleCreate" c_BinaryenModuleCreate ::
+               IO BinaryenModuleRef
+
+foreign import ccall interruptible
+               "binaryen-c.h BinaryenModuleDispose" c_BinaryenModuleDispose ::
+               BinaryenModuleRef -> IO ()
+
+newtype BinaryenFunctionTypeRef = BinaryenFunctionTypeRef
+    { getBinaryenFunctionTypeRef :: Ptr ()
+    }
+
+foreign import ccall interruptible
+               "binaryen-c.h BinaryenAddFunctionType" c_BinaryenAddFunctionType ::
+               BinaryenModuleRef ->
+                 CString ->
+                   BinaryenType -> Ptr BinaryenType -> IO BinaryenFunctionTypeRef
 
 newtype BinaryenOp = BinaryenOp
     { getBinaryenOp :: CInt
@@ -461,3 +488,270 @@ foreign import ccall interruptible
 foreign import ccall interruptible
                "binaryen-c.h BinaryenHasFeature" c_BinaryenHasFeature ::
                BinaryenOp
+
+newtype BinaryenExpressionRef = BinaryenExpressionRef
+    { getBinaryenExpressionRef :: Ptr ()
+    }
+
+foreign import ccall interruptible "binaryen-c.h BinaryenBlock"
+               c_BinaryenBlock ::
+               BinaryenModuleRef ->
+                 CString ->
+                   Ptr BinaryenExpressionRef ->
+                     BinaryenIndex -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible "binaryen-c.h BinaryenIf"
+               c_BinaryenIf ::
+               BinaryenModuleRef ->
+                 BinaryenExpressionRef ->
+                   BinaryenExpressionRef ->
+                     BinaryenExpressionRef -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible "binaryen-c.h BinaryenLoop"
+               c_BinaryenLoop ::
+               BinaryenModuleRef ->
+                 CString -> BinaryenExpressionRef -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible "binaryen-c.h BinaryenBreak"
+               c_BinaryenBreak ::
+               BinaryenModuleRef ->
+                 CString ->
+                   BinaryenExpressionRef ->
+                     BinaryenExpressionRef -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible "binaryen-c.h BinaryenSwitch"
+               c_BinaryenSwitch ::
+               BinaryenModuleRef ->
+                 Ptr CString ->
+                   BinaryenIndex ->
+                     CString ->
+                       BinaryenExpressionRef ->
+                         BinaryenExpressionRef -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible "binaryen-c.h BinaryenCall"
+               c_BinaryenCall ::
+               BinaryenModuleRef ->
+                 CString ->
+                   Ptr BinaryenExpressionRef ->
+                     BinaryenIndex -> BinaryenType -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible
+               "binaryen-c.h BinaryenCallImport" c_BinaryenCallImport ::
+               BinaryenModuleRef ->
+                 CString ->
+                   Ptr BinaryenExpressionRef ->
+                     BinaryenIndex -> BinaryenType -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible
+               "binaryen-c.h BinaryenCallIndirect" c_BinaryenCallIndirect ::
+               BinaryenModuleRef ->
+                 BinaryenExpressionRef ->
+                   Ptr BinaryenExpressionRef ->
+                     BinaryenIndex -> CString -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible "binaryen-c.h BinaryenGetLocal"
+               c_BinaryenGetLocal ::
+               BinaryenModuleRef ->
+                 BinaryenIndex -> BinaryenType -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible "binaryen-c.h BinaryenSetLocal"
+               c_BinaryenSetLocal ::
+               BinaryenModuleRef ->
+                 BinaryenIndex -> BinaryenExpressionRef -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible "binaryen-c.h BinaryenTeeLocal"
+               c_BinaryenTeeLocal ::
+               BinaryenModuleRef ->
+                 BinaryenIndex -> BinaryenExpressionRef -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible "binaryen-c.h BinaryenLoad"
+               c_BinaryenLoad ::
+               BinaryenModuleRef ->
+                 CUInt ->
+                   CChar ->
+                     CUInt ->
+                       CUInt ->
+                         BinaryenType -> BinaryenExpressionRef -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible "binaryen-c.h BinaryenStore"
+               c_BinaryenStore ::
+               BinaryenModuleRef ->
+                 CUInt ->
+                   CUInt ->
+                     CUInt ->
+                       BinaryenExpressionRef ->
+                         BinaryenExpressionRef -> BinaryenType -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible "binaryen-c.h BinaryenUnary"
+               c_BinaryenUnary ::
+               BinaryenModuleRef ->
+                 BinaryenOp -> BinaryenExpressionRef -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible "binaryen-c.h BinaryenBinary"
+               c_BinaryenBinary ::
+               BinaryenModuleRef ->
+                 BinaryenOp ->
+                   BinaryenExpressionRef ->
+                     BinaryenExpressionRef -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible "binaryen-c.h BinaryenSelect"
+               c_BinaryenSelect ::
+               BinaryenModuleRef ->
+                 BinaryenExpressionRef ->
+                   BinaryenExpressionRef ->
+                     BinaryenExpressionRef -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible "binaryen-c.h BinaryenDrop"
+               c_BinaryenDrop ::
+               BinaryenModuleRef ->
+                 BinaryenExpressionRef -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible "binaryen-c.h BinaryenReturn"
+               c_BinaryenReturn ::
+               BinaryenModuleRef ->
+                 BinaryenExpressionRef -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible "binaryen-c.h BinaryenHost"
+               c_BinaryenHost ::
+               BinaryenModuleRef ->
+                 BinaryenOp ->
+                   CString ->
+                     Ptr BinaryenExpressionRef ->
+                       BinaryenIndex -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible "binaryen-c.h BinaryenNop"
+               c_BinaryenNop :: BinaryenModuleRef -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible
+               "binaryen-c.h BinaryenUnreachable" c_BinaryenUnreachable ::
+               BinaryenModuleRef -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible
+               "binaryen-c.h BinaryenExpressionPrint" c_BinaryenExpressionPrint ::
+               BinaryenExpressionRef -> IO ()
+
+newtype BinaryenFunctionRef = BinaryenFunctionRef
+    { getBinaryenFunctionRef :: Ptr ()
+    }
+
+foreign import ccall interruptible
+               "binaryen-c.h BinaryenAddFunction" c_BinaryenAddFunction ::
+               BinaryenModuleRef ->
+                 CString ->
+                   BinaryenFunctionTypeRef ->
+                     Ptr BinaryenType ->
+                       BinaryenIndex -> BinaryenExpressionRef -> IO BinaryenFunctionRef
+
+newtype BinaryenImportRef = BinaryenImportRef
+    { getBinaryenImportRef :: Ptr ()
+    }
+
+foreign import ccall interruptible "binaryen-c.h BinaryenAddImport"
+               c_BinaryenAddImport ::
+               BinaryenModuleRef ->
+                 CString ->
+                   CString ->
+                     CString -> BinaryenFunctionTypeRef -> IO BinaryenImportRef
+
+newtype BinaryenExportRef = BinaryenExportRef
+    { getBinaryenExportRef :: Ptr ()
+    }
+
+foreign import ccall interruptible "binaryen-c.h BinaryenAddExport"
+               c_BinaryenAddExport ::
+               BinaryenModuleRef -> CString -> CString -> IO BinaryenExportRef
+
+foreign import ccall interruptible
+               "binaryen-c.h BinaryenSetFunctionTable" c_BinaryenSetFunctionTable
+               ::
+               BinaryenModuleRef ->
+                 Ptr BinaryenFunctionRef -> BinaryenIndex -> IO ()
+
+foreign import ccall interruptible "binaryen-c.h BinaryenSetMemory"
+               c_BinaryenSetMemory ::
+               BinaryenModuleRef ->
+                 BinaryenIndex ->
+                   BinaryenIndex ->
+                     CString ->
+                       Ptr CString ->
+                         Ptr BinaryenExpressionRef ->
+                           Ptr BinaryenIndex -> BinaryenIndex -> IO ()
+
+foreign import ccall interruptible "binaryen-c.h BinaryenSetStart"
+               c_BinaryenSetStart ::
+               BinaryenModuleRef -> BinaryenFunctionRef -> IO ()
+
+foreign import ccall interruptible
+               "binaryen-c.h BinaryenModulePrint" c_BinaryenModulePrint ::
+               BinaryenModuleRef -> IO ()
+
+foreign import ccall interruptible
+               "binaryen-c.h BinaryenModuleValidate" c_BinaryenModuleValidate ::
+               BinaryenModuleRef -> IO CInt
+
+foreign import ccall interruptible
+               "binaryen-c.h BinaryenModuleOptimize" c_BinaryenModuleOptimize ::
+               BinaryenModuleRef -> IO ()
+
+foreign import ccall interruptible
+               "binaryen-c.h BinaryenModuleAutoDrop" c_BinaryenModuleAutoDrop ::
+               BinaryenModuleRef -> IO ()
+
+foreign import ccall interruptible
+               "binaryen-c.h BinaryenModuleWrite" c_BinaryenModuleWrite ::
+               BinaryenModuleRef -> CString -> CSize -> IO CSize
+
+foreign import ccall interruptible
+               "binaryen-c.h BinaryenModuleRead" c_BinaryenModuleRead ::
+               CString -> CSize -> IO BinaryenModuleRef
+
+foreign import ccall interruptible
+               "binaryen-c.h BinaryenModuleInterpret" c_BinaryenModuleInterpret ::
+               BinaryenModuleRef -> IO ()
+
+newtype RelooperRef = RelooperRef
+    { getRelooperRef :: Ptr ()
+    }
+
+newtype RelooperBlockRef = RelooperBlockRef
+    { getRelooperBlockRef :: Ptr ()
+    }
+
+foreign import ccall interruptible "binaryen-c.h RelooperCreate"
+               c_RelooperCreate :: IO RelooperRef
+
+foreign import ccall interruptible "binaryen-c.h RelooperAddBlock"
+               c_RelooperAddBlock ::
+               RelooperRef -> BinaryenExpressionRef -> IO RelooperBlockRef
+
+foreign import ccall interruptible "binaryen-c.h RelooperAddBranch"
+               c_RelooperAddBranch ::
+               RelooperBlockRef ->
+                 RelooperBlockRef ->
+                   BinaryenExpressionRef -> BinaryenExpressionRef -> IO ()
+
+foreign import ccall interruptible
+               "binaryen-c.h RelooperAddBlockWithSwitch"
+               c_RelooperAddBlockWithSwitch ::
+               RelooperRef ->
+                 BinaryenExpressionRef ->
+                   BinaryenExpressionRef -> IO RelooperBlockRef
+
+foreign import ccall interruptible
+               "binaryen-c.h RelooperAddBranchForSwitch"
+               c_RelooperAddBranchForSwitch ::
+               RelooperBlockRef ->
+                 RelooperBlockRef ->
+                   Ptr BinaryenIndex ->
+                     BinaryenIndex -> BinaryenExpressionRef -> IO ()
+
+foreign import ccall interruptible
+               "binaryen-c.h RelooperRenderAndDispose" c_RelooperRenderAndDispose
+               ::
+               RelooperRef ->
+                 RelooperBlockRef ->
+                   BinaryenIndex -> BinaryenModuleRef -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible
+               "binaryen-c.h BinaryenSetAPITracing" c_BinaryenSetAPITracing ::
+               CInt -> IO ()
