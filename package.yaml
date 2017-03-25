@@ -14,19 +14,6 @@ extra-source-files:
 extra-libraries:
   - binaryen
 
-when:
-  - condition: os(windows)
-    then:
-      include-dirs:
-        - C:\\msys64\\usr\\local\\include
-      extra-lib-dirs:
-        - C:\\msys64\\usr\\local\\lib
-    else:
-      include-dirs:
-        - $HOME/.local/include
-      extra-lib-dirs:
-        - $HOME/.local/lib
-
 ghc-options: -Wall
 
 dependencies:

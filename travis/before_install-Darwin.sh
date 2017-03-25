@@ -17,4 +17,4 @@ ninja install
 cd $TRAVIS_BUILD_DIR
 curl -L https://www.stackage.org/stack/osx-x86_64 | tar xz --strip-components=1 --include '*/stack' -C ~/.local/bin
 stack config set install-ghc --global true
-stack --no-terminal build --test --bench --only-dependencies
+stack --no-terminal --extra-include-dirs ~/.local/include --extra-lib-dirs ~/.local/lib build --test --bench --only-dependencies
