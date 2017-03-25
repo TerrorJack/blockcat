@@ -5,18 +5,17 @@ cache:
   - "%APPVEYOR_BUILD_FOLDER%\\.stack-work"
 
 install:
-  - New-Item $env:APPDATA\\local\\bin -ItemType directory
-  - $env:PATH="$env:APPDATA\\local\\bin;$env:PATH"
-  - Invoke-WebRequest https://www.stackage.org/stack/windows-x86_64 -OutFile $env:TMP\\stack.zip
-  - Expand-Archive $env:TMP\\stack.zip $env:APPDATA\\local\\bin
-
-before_build:
-  - function stack { stack.exe --no-terminal $args }
-  - stack setup > NUL
-  - stack exec pacman -- -Syu --noconfirm
-  - stack exec pacman -- -Su --noconfirm
-  - stack exec pacman -- -Su --noconfirm
-  - While ($true) { stack build --test --bench --only-dependencies; If ($?) { Break } }
+  - ps: |
+  New-Item $env:APPDATA\\local\\bin -ItemType directory
+  $env:PATH="$env:APPDATA\\local\\bin;$env:PATH"
+  Invoke-WebRequest https://www.stackage.org/stack/windows-x86_64 -OutFile $env:TMP\\stack.zip
+  Expand-Archive $env:TMP\\stack.zip $env:APPDATA\\local\\bin
+  function stack { stack.exe --no-terminal $args }
+  stack setup > NUL
+  stack exec pacman -- -Syu --noconfirm
+  stack exec pacman -- -Su --noconfirm
+  stack exec pacman -- -Su --noconfirm
+  While ($true) { stack build --test --bench --only-dependencies; If ($?) { Break } }
 
 build: off
 

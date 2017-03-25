@@ -34,10 +34,11 @@ before_install:
     else
       travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
     fi
-  - alias stack="stack --no-terminal --system-ghc --install-ghc"
-  - stack build --test --bench --only-dependencies
+  - stack config set system-ghc --global true
+  - stack config set install-ghc --global true
+  - stack --no-terminal build --test --bench --only-dependencies
 
 install: true
 
 script:
-  - stack build --haddock --no-haddock-deps --test --bench --no-run-benchmarks
+  - stack --no-terminal build --haddock --no-haddock-deps --test --bench --no-run-benchmarks
