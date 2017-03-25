@@ -1,9 +1,21 @@
+{-# LANGUAGE DuplicateRecordFields #-}
+
 module Blockcat.Binaryen
     ( Index(..)
     , Type(..)
     , Op(..)
+    , Expression(..)
+    , FunctionType(..)
+    , Function(..)
+    , Import(..)
+    , Export(..)
+    , Module(..)
     ) where
 
+import Data.ByteString
+import Data.HashMap.Strict
+import Data.Int
+import Data.Vector
 import Data.Word
 
 newtype Index = Index
@@ -145,3 +157,78 @@ data Op
     | CurrentMemory
     | GrowMemory
     | HasFeature
+
+data Expression
+    = Block { name :: ByteString
+           ,  children :: Vector Expression}
+    | If { condition, ifTrue, ifFalse :: Expression}
+    | Loop { in_ :: ByteString
+          ,  body :: Expression}
+    | Break { name :: ByteString
+           ,  condition, value :: Expression}
+    | Switch { names :: Vector ByteString
+            ,  defaultName :: ByteString
+            ,  condition, value :: Expression}
+    | Call { target :: ByteString
+          ,  operands :: Vector Expression
+          ,  returnType :: Type}
+    | CallImport { target :: ByteString
+                ,  operands :: Vector Expression
+                ,  returnType :: Type}
+    | CallIndirect { target_ :: Expression
+                  ,  operands :: Vector Expression
+                  ,  type__ :: ByteString}
+    | GetLocal { index :: Index
+              ,  type_ :: Type}
+    | SetLocal { index :: Index
+              ,  value :: Expression}
+    | TeeLocal { index :: Index
+              ,  value :: Expression}
+    | Load { bytes :: Word32
+          ,  signed :: Int8
+          ,  offset, align :: Word32
+          ,  type_ :: Type
+          ,  ptr :: Expression}
+    | Store { bytes, offset, align :: Word32
+           ,  ptr, value :: Expression
+           ,  type_ :: Type}
+    | Unary { op :: Op
+           ,  value :: Expression}
+    | Binary { op :: Op
+            ,  left, right :: Expression}
+    | Select { condition, ifTrue, ifFalse :: Expression}
+    | Drop { value :: Expression}
+    | Return { value :: Expression}
+    | Host { op :: Op
+          ,  name :: ByteString
+          ,  operands :: Vector Expression}
+    | Nop
+    | Unreachable
+
+data FunctionType = FunctionType
+    { name :: ByteString
+    , result :: Type
+    , paramTypes :: Vector Type
+    }
+
+data Function = Function
+    { name :: ByteString
+    , type_ :: FunctionType
+    , varTypes :: Vector Type
+    , body :: Expression
+    }
+
+data Import = Import
+    { internalName, externalModuleName, externalBaseName :: ByteString
+    , type_ :: FunctionType
+    }
+
+data Export = Export
+    { internalName, externalName :: ByteString
+    }
+
+data Module = Module
+    { functions :: HashMap ByteString Function
+    , imports :: HashMap ByteString Import
+    , exports :: HashMap ByteString Export
+    }

@@ -19,6 +19,9 @@ ghc-options: -Wall
 dependencies:
   - base >= 4.9 && < 4.10
   - bytestring
+  - hashable
+  - unordered-containers
+  - vector
 
 library:
   source-dirs: src
