@@ -1,0 +1,19 @@
+name: blockcat
+version: 0.0.1
+stability: alpha
+maintainer: Shao Cheng <astrohavoc@gmail.com>
+copyright: (c) 2017 Shao Cheng
+license: BSD3
+github: TerrorJack/blockcat
+
+extra-source-files:
+  - README.md
+  - CHANGELOG.md
+
+ghc-options: -Wall
+
+dependencies:
+  - base >= 4.9 && < 4.10
+
+library:
+  source-dirs: src
