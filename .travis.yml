@@ -22,37 +22,13 @@ matrix:
           packages:
             - clang-5.0
             - ghc-8.0.2
-      env:
-        - CC=clang-5.0
-        - CXX=clang++-5.0
+            - ninja-build
 
     - os: osx
       osx_image: xcode8.2
-      env:
-        - CC=clang
-        - CXX=clang++
 
 before_install:
-  - cd $TRAVIS_BUILD_DIR
-  - travis_retry curl -L https://github.com/WebAssembly/binaryen/archive/master.zip -o binaryen-master.zip
-  - unzip -q binaryen-master.zip
-  - cd binaryen-master
-  - cmake -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_INSTALL_PREFIX=~/.local -G Ninja .
-  - ninja
-  - ninja install
-
-  - cd $TRAVIS_BUILD_DIR
-  - export PATH=~/.local/bin:/opt/ghc/8.0.2/bin:$PATH
-  - |
-    if [ `uname` = "Darwin" ]
-    then
-      travis_retry curl -L https://www.stackage.org/stack/osx-x86_64 | tar xz --strip-components=1 --include '*/stack' -C ~/.local/bin
-    else
-      travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
-    fi
-  - stack config set system-ghc --global true
-  - stack config set install-ghc --global true
-  - stack --no-terminal build --test --bench --only-dependencies
+  - travis/before_install-`uname`.sh
 
 install: true
 
