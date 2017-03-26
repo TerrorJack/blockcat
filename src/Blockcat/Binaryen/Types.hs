@@ -1,7 +1,7 @@
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE StrictData #-}
 
-module Blockcat.Binaryen
+module Blockcat.Binaryen.Types
     ( Index(..)
     , Type(..)
     , Literal(..)

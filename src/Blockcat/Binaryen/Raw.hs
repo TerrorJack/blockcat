@@ -1,6 +1,6 @@
 {-# LANGUAGE InterruptibleFFI #-}
 
-module Blockcat.Raw.Binaryen where
+module Blockcat.Binaryen.Raw where
 
 import Foreign
 import Foreign.C
