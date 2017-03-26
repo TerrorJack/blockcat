@@ -22,20 +22,25 @@ toBinaryenType I64 = c_BinaryenInt64
 toBinaryenType F32 = c_BinaryenFloat32
 toBinaryenType F64 = c_BinaryenFloat64
 
-withBinaryenTypePtr :: Vector Type -> (Ptr BinaryenType -> IO a) -> IO a
-withBinaryenTypePtr v f =
-    allocaBytesAligned
-        (V.length v * sizeOf (undefined :: BinaryenType))
-        (alignment (undefined :: BinaryenType)) $ \p -> do
-        V.imapM_ (\i a -> pokeElemOff p i (toBinaryenType a)) v
+withStorablePtr
+    :: Storable e
+    => (t -> IO e) -> Vector t -> (Ptr e -> IO a) -> IO a
+withStorablePtr t v f =
+    allocaBytesAligned (V.length v * sizeOf (rogue t)) (alignment (rogue t)) $ \p -> do
+        flip V.imapM_ v $ \i a -> do
+            x <- t a
+            pokeElemOff p i x
         f p
+  where
+    rogue :: (t -> IO e) -> e
+    rogue = undefined
 
 addFunctionType :: BinaryenModuleRef
                 -> FunctionType
                 -> IO BinaryenFunctionTypeRef
 addFunctionType m FunctionType {..} =
     useAsCString name $ \n ->
-        withBinaryenTypePtr paramTypes $ \p ->
+        withStorablePtr (pure . toBinaryenType) paramTypes $ \p ->
             c_BinaryenAddFunctionType
                 m
                 n
@@ -51,7 +56,7 @@ addFunction :: BinaryenModuleRef -> Function -> IO BinaryenFunctionRef
 addFunction m Function {..} =
     useAsCString name $ \n -> do
         ft <- addFunctionType m type_
-        withBinaryenTypePtr varTypes $ \p -> do
+        withStorablePtr (pure . toBinaryenType) varTypes $ \p -> do
             e <- addExpression m body
             c_BinaryenAddFunction m n ft p (fromIntegral $ V.length varTypes) e
 

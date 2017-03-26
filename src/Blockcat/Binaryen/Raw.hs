@@ -529,7 +529,7 @@ foreign import ccall interruptible
 
 newtype BinaryenExpressionRef = BinaryenExpressionRef
     { getBinaryenExpressionRef :: Ptr ()
-    }
+    } deriving (Storable)
 
 foreign import ccall interruptible "binaryen-c.h BinaryenBlock"
                c_BinaryenBlock ::
