@@ -1,4 +1,5 @@
 {-# LANGUAGE InterruptibleFFI #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 module Blockcat.Binaryen.Raw where
 
@@ -7,11 +8,11 @@ import Foreign.C
 
 newtype BinaryenIndex = BinaryenIndex
     { getBinaryenIndex :: CUInt
-    }
+    } deriving (Num)
 
 newtype BinaryenType = BinaryenType
     { getBinaryenType :: CUInt
-    }
+    } deriving (Storable)
 
 foreign import ccall interruptible "binaryen-c.h BinaryenNone"
                c_BinaryenNone :: BinaryenType
@@ -48,7 +49,8 @@ foreign import ccall interruptible
                "binaryen-c.h BinaryenAddFunctionType" c_BinaryenAddFunctionType ::
                BinaryenModuleRef ->
                  CString ->
-                   BinaryenType -> Ptr BinaryenType -> IO BinaryenFunctionTypeRef
+                   BinaryenType ->
+                     Ptr BinaryenType -> BinaryenIndex -> IO BinaryenFunctionTypeRef
 
 newtype BinaryenLiteralRef = BinaryenLiteralRef
     { getBinaryenLiteralRef :: Ptr ()
