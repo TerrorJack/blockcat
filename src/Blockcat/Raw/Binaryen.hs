@@ -50,6 +50,39 @@ foreign import ccall interruptible
                  CString ->
                    BinaryenType -> Ptr BinaryenType -> IO BinaryenFunctionTypeRef
 
+newtype BinaryenLiteralRef = BinaryenLiteralRef
+    { getBinaryenLiteralRef :: Ptr ()
+    }
+
+foreign import ccall interruptible "utils.h BinaryenLiteralSize"
+               c_BinaryenLiteralSize :: CSize
+
+foreign import ccall interruptible
+               "utils.h BinaryenLiteralRefInt32" c_BinaryenLiteralRefInt32 ::
+               BinaryenLiteralRef -> CInt -> IO ()
+
+foreign import ccall interruptible
+               "utils.h BinaryenLiteralRefInt64" c_BinaryenLiteralRefInt64 ::
+               BinaryenLiteralRef -> CLong -> IO ()
+
+foreign import ccall interruptible
+               "utils.h BinaryenLiteralRefFloat32" c_BinaryenLiteralRefFloat32 ::
+               BinaryenLiteralRef -> CFloat -> IO ()
+
+foreign import ccall interruptible
+               "utils.h BinaryenLiteralRefFloat64" c_BinaryenLiteralRefFloat64 ::
+               BinaryenLiteralRef -> CDouble -> IO ()
+
+foreign import ccall interruptible
+               "utils.h BinaryenLiteralRefFloat32Bits"
+               c_BinaryenLiteralRefFloat32Bits ::
+               BinaryenLiteralRef -> CInt -> IO ()
+
+foreign import ccall interruptible
+               "utils.h BinaryenLiteralRefFloat64Bits"
+               c_BinaryenLiteralRefFloat64Bits ::
+               BinaryenLiteralRef -> CLong -> IO ()
+
 newtype BinaryenOp = BinaryenOp
     { getBinaryenOp :: CInt
     }
@@ -584,6 +617,10 @@ foreign import ccall interruptible "binaryen-c.h BinaryenStore"
                      CUInt ->
                        BinaryenExpressionRef ->
                          BinaryenExpressionRef -> BinaryenType -> IO BinaryenExpressionRef
+
+foreign import ccall interruptible "utils.h BinaryenConstRef"
+               c_BinaryenConstRef ::
+               BinaryenModuleRef -> BinaryenLiteralRef -> IO BinaryenExpressionRef
 
 foreign import ccall interruptible "binaryen-c.h BinaryenUnary"
                c_BinaryenUnary ::

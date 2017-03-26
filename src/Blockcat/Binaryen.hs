@@ -1,8 +1,10 @@
 {-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE StrictData #-}
 
 module Blockcat.Binaryen
     ( Index(..)
     , Type(..)
+    , Literal(..)
     , Op(..)
     , Expression(..)
     , FunctionType(..)
@@ -28,6 +30,12 @@ data Type
     | I64
     | F32
     | F64
+
+data Literal
+    = I32Literal Int32
+    | I64Literal Int64
+    | F32Literal Float
+    | F64Literal Double
 
 data Op
     = ClzInt32
@@ -192,6 +200,7 @@ data Expression
     | Store { bytes, offset, align :: Word32
            ,  ptr, value :: Expression
            ,  type_ :: Type}
+    | Const Literal
     | Unary { op :: Op
            ,  value :: Expression}
     | Binary { op :: Op
