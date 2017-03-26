@@ -10,7 +10,6 @@ import Blockcat.Binaryen.Types
 import Data.ByteString (useAsCString)
 import Data.Coerce
 import Data.Foldable
-import Data.Functor
 import Data.Vector as V
 import Foreign.C.Types
 import Foreign.Marshal.Alloc
@@ -171,6 +170,22 @@ withStorablePtr t v f =
     rogue :: (t -> IO e) -> e
     rogue = undefined
 
+withScopedStorablePtrs :: (t -> (Ptr e -> IO a) -> IO a)
+                       -> Vector t
+                       -> (Ptr (Ptr e) -> IO a)
+                       -> IO a
+withScopedStorablePtrs c v f =
+    allocaBytesAligned
+        (V.length v * sizeOf (undefined :: Ptr ()))
+        (alignment (undefined :: Ptr ())) $ \p ->
+        let w l =
+                if V.null l
+                    then f p
+                    else c (V.head l) $ \p' -> do
+                             pokeElemOff p (V.length v - V.length l) p'
+                             w $ V.tail l
+        in w v
+
 addFunctionType :: BinaryenModuleRef
                 -> FunctionType
                 -> IO BinaryenFunctionTypeRef
@@ -205,7 +220,12 @@ addExpression m e =
                 c <- addExpression m condition
                 v <- addExpression m value
                 c_BinaryenBreak m n c v
-        Switch {..} -> undefined
+        Switch {..} ->
+            withScopedStorablePtrs useAsCString names $ \ns ->
+                useAsCString defaultName $ \dn -> do
+                    c <- addExpression m condition
+                    v <- addExpression m value
+                    c_BinaryenSwitch m ns (lengthBinaryenIndex names) dn c v
         Call {..} ->
             useAsCString target $ \t ->
                 withStorablePtr (addExpression m) operands $ \p ->
@@ -315,13 +335,16 @@ addFunction m Function {..} =
             e <- addExpression m body
             c_BinaryenAddFunction m n ft p (lengthBinaryenIndex varTypes) e
 
---todo
-addImport :: BinaryenModuleRef -> Import -> IO ()
-addImport = undefined
+addImport :: BinaryenModuleRef -> Import -> IO BinaryenImportRef
+addImport m Import {..} =
+    useAsCString internalName $ \i ->
+        useAsCString externalModuleName $ \emn ->
+            useAsCString externalBaseName $ \ebn -> do
+                t <- addFunctionType m type_
+                c_BinaryenAddImport m i emn ebn t
 
-addExport :: BinaryenModuleRef -> Export -> IO ()
+addExport :: BinaryenModuleRef -> Export -> IO BinaryenExportRef
 addExport m Export {..} =
-    void $
     useAsCString internalName $ \i ->
         useAsCString externalName $ \e -> c_BinaryenAddExport m i e
 
