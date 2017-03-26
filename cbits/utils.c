@@ -1,6 +1,9 @@
+#include <stdalign.h>
 #include <utils.h>
 
 size_t BinaryenLiteralSize(void) { return sizeof(struct BinaryenLiteral); }
+
+size_t BinaryenLiteralAlign(void) { return alignof(struct BinaryenLiteral); }
 
 void BinaryenLiteralRefInt32(BinaryenLiteralRef ref, int32_t x) {
   *ref = BinaryenLiteralInt32(x);

@@ -59,13 +59,16 @@ newtype BinaryenLiteralRef = BinaryenLiteralRef
 foreign import ccall interruptible "utils.h BinaryenLiteralSize"
                c_BinaryenLiteralSize :: CSize
 
+foreign import ccall interruptible "utils.h BinaryenLiteralAlign"
+               c_BinaryenLiteralAlign :: CSize
+
 foreign import ccall interruptible
                "utils.h BinaryenLiteralRefInt32" c_BinaryenLiteralRefInt32 ::
                BinaryenLiteralRef -> CInt -> IO ()
 
 foreign import ccall interruptible
                "utils.h BinaryenLiteralRefInt64" c_BinaryenLiteralRefInt64 ::
-               BinaryenLiteralRef -> CLong -> IO ()
+               BinaryenLiteralRef -> CLLong -> IO ()
 
 foreign import ccall interruptible
                "utils.h BinaryenLiteralRefFloat32" c_BinaryenLiteralRefFloat32 ::
@@ -83,7 +86,7 @@ foreign import ccall interruptible
 foreign import ccall interruptible
                "utils.h BinaryenLiteralRefFloat64Bits"
                c_BinaryenLiteralRefFloat64Bits ::
-               BinaryenLiteralRef -> CLong -> IO ()
+               BinaryenLiteralRef -> CLLong -> IO ()
 
 newtype BinaryenOp = BinaryenOp
     { getBinaryenOp :: CInt

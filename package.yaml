@@ -20,6 +20,8 @@ include-dirs:
 c-sources:
   - cbits/*.c
 
+cc-options: -std=c11
+
 ghc-options: -Wall
 
 dependencies:

@@ -4,6 +4,7 @@
 #include <binaryen-c.h>
 
 size_t BinaryenLiteralSize(void);
+size_t BinaryenLiteralAlign(void);
 
 typedef struct BinaryenLiteral* BinaryenLiteralRef;
 

@@ -184,7 +184,6 @@ addFunctionType m FunctionType {..} =
                 p
                 (lengthBinaryenIndex paramTypes)
 
---todo
 addExpression :: BinaryenModuleRef -> Expression -> IO BinaryenExpressionRef
 addExpression m e =
     case e of
@@ -264,7 +263,20 @@ addExpression m e =
                 p
                 v
                 (toBinaryenType type_)
-        Const _ -> undefined
+        Const lit ->
+            allocaBytesAligned
+                (fromIntegral c_BinaryenLiteralSize)
+                (fromIntegral c_BinaryenLiteralAlign) $ \p -> do
+                case lit of
+                    I32Literal x ->
+                        c_BinaryenLiteralRefInt32 (coerce p) (coerce x)
+                    I64Literal x ->
+                        c_BinaryenLiteralRefInt64 (coerce p) (coerce x)
+                    F32Literal x ->
+                        c_BinaryenLiteralRefFloat32 (coerce p) (coerce x)
+                    F64Literal x ->
+                        c_BinaryenLiteralRefFloat64 (coerce p) (coerce x)
+                c_BinaryenConstRef m (coerce p)
         Unary {..} -> do
             v <- addExpression m value
             c_BinaryenUnary m (toBinaryenOp op) v
