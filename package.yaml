@@ -7,6 +7,12 @@ copyright: (c) 2017 Shao Cheng
 license: BSD3
 github: TerrorJack/blockcat
 
+custom-setup:
+  dependencies:
+    - base
+    - Cabal
+    - shake
+
 extra-source-files:
   - README.md
   - CHANGELOG.md
