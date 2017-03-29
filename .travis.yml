@@ -37,4 +37,4 @@ install: true
 
 script:
   - cd $TRAVIS_BUILD_DIR
-  - stack --no-terminal --extra-include-dirs ~/.local/include --extra-lib-dirs ~/.local/lib build --haddock --no-haddock-deps --test --bench --no-run-benchmarks
+  - stack --no-terminal --extra-lib-dirs $BINARYEN_LIBDIR build --haddock --no-haddock-deps --test --bench --no-run-benchmarks

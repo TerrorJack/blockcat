@@ -16,6 +16,8 @@ custom-setup:
 extra-source-files:
   - README.md
   - CHANGELOG.md
+  - cbits/utils.h
+  - cbits/utils.cpp
   - binaryen/src/binaryen-c.cpp
   - binaryen/src/cfg/Relooper.cpp
   - binaryen/src/passes/pass.cpp

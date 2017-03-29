@@ -65,6 +65,7 @@ buildBinaryen libdir = do
                 , "-Werror"
                 , "-Wextra"
                 , "-fno-omit-frame-pointer"
+                , "-fPIC"
                 , "-O2"
                 , "-UNDEBUG"
                 , "-o"
