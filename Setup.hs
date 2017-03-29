@@ -15,9 +15,14 @@ import System.Info
 
 buildBinaryen :: FilePath -> IO ()
 buildBinaryen libdir = do
-    cxx <- fromMaybe "g++" <$> lookupEnv "CXX"
+    cxx <-
+        fromMaybe
+            (if os == "darwin" || os == "freebsd"
+                 then "clang++"
+                 else "g++") <$>
+        lookupEnv "CXX"
     let (libTarget, dynlibTarget) =
-            if isWindows
+            if os == "mingw32"
                 then ( libdir </> "libbinaryen.dll.a"
                      , libdir </> "libbinaryen.dll")
                 else (libdir </> "libbinaryen.a", libdir </> "libbinaryen.so")
@@ -79,7 +84,6 @@ buildBinaryen libdir = do
     binaryenPrefix = "binaryen"
     srcPrefix = binaryenPrefix </> "src"
     cbitsPrefix = "cbits"
-    isWindows = os == "mingw32"
     objs =
         (cbitsPrefix </> "utils.cpp.obj") :
         [srcPrefix </> src <.> "obj" | (src, _) <- srcs]
