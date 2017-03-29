@@ -26,7 +26,7 @@ buildBinaryen libdir = do
                 then ( libdir </> "libbinaryen.dll.a"
                      , libdir </> "libbinaryen.dll")
                 else (libdir </> "libbinaryen.a", libdir </> "libbinaryen.so")
-    shake shakeOptions {shakeThreads = 0, shakeProgress = progressSimple} $ do
+    shake shakeOptions {shakeThreads = 0} $ do
         want [libTarget, dynlibTarget]
         libTarget %> \_ -> do
             need objs
