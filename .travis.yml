@@ -2,6 +2,7 @@ language: generic
 
 git:
   depth: 1
+  submodules_depth: 1
 
 cache:
   directories:
@@ -30,11 +31,11 @@ before_install:
   - mkdir -p ~/.local/bin
   - mkdir -p ~/.local/lib
   - export PATH=~/.local/bin:/opt/ghc/8.0.2/bin:$PATH
+  - if [ `uname` = "Linux" ]; then export CXX=`which clang++-5.0`; else export CXX=`which clang++`; fi
   - export BINARYEN_LIBDIR=~/.local/lib
   - travis/before_install-`uname`.sh
 
 install: true
 
 script:
-  - cd $TRAVIS_BUILD_DIR
-  - stack --no-terminal --extra-lib-dirs $BINARYEN_LIBDIR build --haddock --no-haddock-deps --test --bench --no-run-benchmarks
+  - stack --no-terminal build --haddock --no-haddock-deps --test --bench --no-run-benchmarks
