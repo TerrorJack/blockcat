@@ -2,7 +2,6 @@ language: generic
 
 git:
   depth: 1
-  submodules_depth: 1
 
 cache:
   directories:
