@@ -3,9 +3,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 import Data.Foldable
+import Data.Functor
 import Data.Maybe
 import Development.Shake
 import Development.Shake.FilePath
+import Distribution.PackageDescription
 import Distribution.Simple
 import Distribution.Simple.Setup
 import System.Environment
@@ -834,14 +836,13 @@ buildBinaryen libdir = do
 main :: IO ()
 main = do
     libdir <- System.Environment.getEnv "BINARYEN_LIBDIR"
-    buildBinaryen libdir
     defaultMainWithHooks
         simpleUserHooks
-        { preConf =
-              \args flags ->
-                  preConf
+        { preConf = \args flags -> buildBinaryen libdir $> emptyHookedBuildInfo
+        , confHook =
+              \(g, h) c ->
+                  confHook
                       simpleUserHooks
-                      args
-                      flags
-                      {configExtraLibDirs = libdir : configExtraLibDirs flags}
+                      (g, h)
+                      c {configExtraLibDirs = libdir : configExtraLibDirs c}
         }
