@@ -7,7 +7,6 @@ cache:
   directories:
     - $HOME/.stack/
     - $TRAVIS_BUILD_DIR/.stack-work/
-    - $TRAVIS_BUILD_DIR/binaryen/
 
 matrix:
   include:
@@ -23,13 +22,15 @@ matrix:
           packages:
             - clang-5.0
             - ghc-8.0.2
-            - ninja-build
 
     - os: osx
       osx_image: xcode8.2
 
 before_install:
+  - mkdir -p ~/.local/bin
+  - mkdir -p ~/.local/lib
   - export PATH=~/.local/bin:/opt/ghc/8.0.2/bin:$PATH
+  - export BINARYEN_LIBDIR=~/.local/lib
   - travis/before_install-`uname`.sh
 
 install: true

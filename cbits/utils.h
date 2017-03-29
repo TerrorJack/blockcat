@@ -3,6 +3,10 @@
 
 #include <binaryen-c.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 size_t BinaryenLiteralSize(void);
 size_t BinaryenLiteralAlign(void);
 
@@ -17,5 +21,9 @@ void BinaryenLiteralRefFloat64Bits(BinaryenLiteralRef ref, int64_t x);
 
 BinaryenExpressionRef BinaryenConstRef(BinaryenModuleRef module,
                                        BinaryenLiteralRef value);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

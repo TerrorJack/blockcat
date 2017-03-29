@@ -1,4 +1,3 @@
-#include <stdalign.h>
 #include <utils.h>
 
 size_t BinaryenLiteralSize(void) { return sizeof(struct BinaryenLiteral); }

@@ -16,17 +16,106 @@ custom-setup:
 extra-source-files:
   - README.md
   - CHANGELOG.md
+  - binaryen/src/binaryen-c.cpp
+  - binaryen/src/cfg/Relooper.cpp
+  - binaryen/src/passes/pass.cpp
+  - binaryen/src/passes/CoalesceLocals.cpp
+  - binaryen/src/passes/CodePushing.cpp
+  - binaryen/src/passes/DeadCodeElimination.cpp
+  - binaryen/src/passes/DuplicateFunctionElimination.cpp
+  - binaryen/src/passes/ExtractFunction.cpp
+  - binaryen/src/passes/Inlining.cpp
+  - binaryen/src/passes/LegalizeJSInterface.cpp
+  - binaryen/src/passes/LocalCSE.cpp
+  - binaryen/src/passes/LogExecution.cpp
+  - binaryen/src/passes/MemoryPacking.cpp
+  - binaryen/src/passes/MergeBlocks.cpp
+  - binaryen/src/passes/Metrics.cpp
+  - binaryen/src/passes/NameManager.cpp
+  - binaryen/src/passes/NameList.cpp
+  - binaryen/src/passes/OptimizeInstructions.cpp
+  - binaryen/src/passes/PickLoadSigns.cpp
+  - binaryen/src/passes/PostEmscripten.cpp
+  - binaryen/src/passes/Precompute.cpp
+  - binaryen/src/passes/Print.cpp
+  - binaryen/src/passes/PrintCallGraph.cpp
+  - binaryen/src/passes/RelooperJumpThreading.cpp
+  - binaryen/src/passes/RemoveImports.cpp
+  - binaryen/src/passes/RemoveMemory.cpp
+  - binaryen/src/passes/RemoveUnusedBrs.cpp
+  - binaryen/src/passes/RemoveUnusedNames.cpp
+  - binaryen/src/passes/RemoveUnusedModuleElements.cpp
+  - binaryen/src/passes/ReorderLocals.cpp
+  - binaryen/src/passes/ReorderFunctions.cpp
+  - binaryen/src/passes/SimplifyLocals.cpp
+  - binaryen/src/passes/Vacuum.cpp
+  - binaryen/src/wasm/literal.cpp
+  - binaryen/src/wasm/wasm.cpp
+  - binaryen/src/wasm/wasm-binary.cpp
+  - binaryen/src/wasm/wasm-io.cpp
+  - binaryen/src/wasm/wasm-s-parser.cpp
+  - binaryen/src/wasm/wasm-type.cpp
+  - binaryen/src/asmjs/asm_v_wasm.cpp
+  - binaryen/src/asmjs/shared-constants.cpp
+  - binaryen/src/ast/ExpressionAnalyzer.cpp
+  - binaryen/src/ast/ExpressionManipulator.cpp
+  - binaryen/src/support/archive.cpp
+  - binaryen/src/support/bits.cpp
+  - binaryen/src/support/colors.cpp
+  - binaryen/src/support/command-line.cpp
+  - binaryen/src/support/file.cpp
+  - binaryen/src/support/safe_integer.cpp
+  - binaryen/src/support/threads.cpp
+  - binaryen/src/asm_v_wasm.h
+  - binaryen/src/ast_utils.h
+  - binaryen/src/binaryen-c.h
+  - binaryen/src/compiler-support.h
+  - binaryen/src/literal.h
+  - binaryen/src/mixed_arena.h
+  - binaryen/src/parsing.h
+  - binaryen/src/pass.h
+  - binaryen/src/pretty_printing.h
+  - binaryen/src/shared-constants.h
+  - binaryen/src/shell-interface.h
+  - binaryen/src/wasm-binary.h
+  - binaryen/src/wasm-builder.h
+  - binaryen/src/wasm-interpreter.h
+  - binaryen/src/wasm-io.h
+  - binaryen/src/wasm-printing.h
+  - binaryen/src/wasm-s-parser.h
+  - binaryen/src/wasm-traversal.h
+  - binaryen/src/wasm-type.h
+  - binaryen/src/wasm-validator.h
+  - binaryen/src/wasm.h
+  - binaryen/src/asmjs/shared-constants.h
+  - binaryen/src/ast/bits.h
+  - binaryen/src/ast/cost.h
+  - binaryen/src/ast/count.h
+  - binaryen/src/ast/hashed.h
+  - binaryen/src/ast/localize.h
+  - binaryen/src/ast/properties.h
+  - binaryen/src/cfg/Relooper.h
+  - binaryen/src/cfg/cfg-traversal.h
+  - binaryen/src/emscripten-optimizer/istring.h
+  - binaryen/src/emscripten-optimizer/optimizer.h
+  - binaryen/src/emscripten-optimizer/parser.h
+  - binaryen/src/emscripten-optimizer/simple_ast.h
+  - binaryen/src/emscripten-optimizer/snprintf.h
+  - binaryen/src/passes/passes.h
+  - binaryen/src/support/archive.h
+  - binaryen/src/support/bits.h
+  - binaryen/src/support/colors.h
+  - binaryen/src/support/command-line.h
+  - binaryen/src/support/file.h
+  - binaryen/src/support/hash.h
+  - binaryen/src/support/learning.h
+  - binaryen/src/support/name.h
+  - binaryen/src/support/safe_integer.h
+  - binaryen/src/support/threads.h
+  - binaryen/src/support/utilities.h
 
 extra-libraries:
   - binaryen
-
-include-dirs:
-  - cbits
-
-c-sources:
-  - cbits/*.c
-
-cc-options: -std=c11
 
 ghc-options: -Wall
 
