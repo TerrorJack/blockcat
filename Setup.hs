@@ -34,7 +34,7 @@ buildBinaryen libdir_ = do
             need objs
             command_ [] cxx ("-shared" : "-o" : dynlibTarget : objs)
         for_ srcs $ \(src, headers) ->
-            (srcPrefix </> src <.> "obj") %> \obj -> do
+            (shakePrefix </> src <.> "obj") %> \obj -> do
                 need [srcPrefix </> h | h <- headers]
                 command_
                     []
@@ -57,7 +57,7 @@ buildBinaryen libdir_ = do
                     , "-c"
                     , srcPrefix </> src
                     ]
-        cbitsPrefix </> "utils.cpp.obj" %> \obj -> do
+        shakePrefix </> "utils.cpp.obj" %> \obj -> do
             need [cbitsPrefix </> "utils.h", srcPrefix </> "binaryen-c.h"]
             command_
                 []
@@ -83,9 +83,10 @@ buildBinaryen libdir_ = do
     binaryenPrefix = "binaryen"
     srcPrefix = binaryenPrefix </> "src"
     cbitsPrefix = "cbits"
+    shakePrefix = ".shake"
     objs =
-        (cbitsPrefix </> "utils.cpp.obj") :
-        [srcPrefix </> src <.> "obj" | (src, _) <- srcs]
+        (shakePrefix </> "utils.cpp.obj") :
+        [shakePrefix </> src <.> "obj" | (src, _) <- srcs]
     srcs =
         [ ( "binaryen-c.cpp"
           , [ "asm_v_wasm.h"

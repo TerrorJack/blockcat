@@ -6,6 +6,7 @@ git:
 cache:
   directories:
     - $HOME/.stack/
+    - $TRAVIS_BUILD_DIR/.shake/
     - $TRAVIS_BUILD_DIR/.stack-work/
 
 matrix:
