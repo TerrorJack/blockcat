@@ -1,20 +1,19 @@
-{-# OPTIONS_GHC -threaded -with-rtsopts="-N -I0 -qg -qb" #-}
+{-# OPTIONS_GHC -Wall -threaded -with-rtsopts="-N -I0 -qg -qb" #-}
 {-# LANGUAGE ApplicativeDo #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 import Data.Foldable
-import Data.Functor
 import Data.Maybe
 import Development.Shake
 import Development.Shake.FilePath
-import Distribution.PackageDescription
 import Distribution.Simple
+import Distribution.Simple.InstallDirs
 import Distribution.Simple.Setup
 import System.Environment
 import System.Info
 
 buildBinaryen :: FilePath -> IO ()
-buildBinaryen libdir = do
+buildBinaryen libdir_ = do
     cxx <-
         fromMaybe
             (if os == "darwin" || os == "freebsd"
@@ -23,9 +22,9 @@ buildBinaryen libdir = do
         lookupEnv "CXX"
     let (libTarget, dynlibTarget) =
             if os == "mingw32"
-                then ( libdir </> "libbinaryen.dll.a"
-                     , libdir </> "libbinaryen.dll")
-                else (libdir </> "libbinaryen.a", libdir </> "libbinaryen.so")
+                then ( libdir_ </> "libbinaryen.dll.a"
+                     , libdir_ </> "libbinaryen.dll")
+                else (libdir_ </> "libbinaryen.a", libdir_ </> "libbinaryen.so")
     shake shakeOptions {shakeThreads = 0} $ do
         want [libTarget, dynlibTarget]
         libTarget %> \_ -> do
@@ -838,15 +837,19 @@ buildBinaryen libdir = do
         ]
 
 main :: IO ()
-main = do
-    libdir <- System.Environment.getEnv "BINARYEN_LIBDIR"
+main =
     defaultMainWithHooks
         simpleUserHooks
-        { preConf = \args flags -> buildBinaryen libdir $> emptyHookedBuildInfo
-        , confHook =
-              \(g, h) c ->
-                  confHook
-                      simpleUserHooks
-                      (g, h)
-                      c {configExtraLibDirs = libdir : configExtraLibDirs c}
+        { confHook =
+              \t c ->
+                  let Distribution.Simple.Setup.Flag p =
+                          libdir $ configInstallDirs c
+                  in do buildBinaryen (fromPathTemplate p)
+                        confHook
+                            simpleUserHooks
+                            t
+                            c
+                            { configExtraLibDirs =
+                                  fromPathTemplate p : configExtraLibDirs c
+                            }
         }
